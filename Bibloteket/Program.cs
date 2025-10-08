@@ -30,6 +30,7 @@ namespace Bibloteket
         //This is the function for the login screen :D
         static void tryLogin()
         {
+            
             Console.WriteLine("--- Login ---");
             Console.WriteLine("Username: ");
             string loginUsername = Console.ReadLine();
@@ -41,39 +42,43 @@ namespace Bibloteket
             }
             catch(FormatException)
             {
-
+                Console.WriteLine("Input was not a valid integer.");
             }
             catch (OverflowException)
             {
-
+                Console.WriteLine("The Input was either too large or too small");
             }
 
             
-
-            if (loginUsername == usernames[0] && loginPin == pinCode[0])
+            if(loginAttemps < 2)
             {
-                loggedIn = true;
-                Console.WriteLine($"Logged in as {loginUsername}");
+                loginAttemps += 1;
+                if (loginUsername == usernames[0] && loginPin == pinCode[0])
+                {
+                    loggedIn = true;
+                    Console.WriteLine($"Logged in as {loginUsername}");
+                }
+                else
+                {
+                    Console.WriteLine("Failed Login try again");
+                    tryLogin();
+                }
             }
-            else
-            {
-                Console.WriteLine("Failed Login try again");
-                tryLogin();
-            }
+            
         }
 
         //These are where most of the variables are stored
-        
+        static int loginAttemps = 0;
         static string[] usernames = {"Bengt","Stig","Rutger","Sten", "Harald"};
         static int[] pinCode = {123456, 234567, 345678, 987654, 876554 };
         static bool loggedIn;
+        
 
         //Main Function
         static void Main(string[] args)
         {
 
             tryLogin();
-            
 
         }
     }
