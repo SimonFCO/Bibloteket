@@ -97,24 +97,25 @@ namespace Bibloteket
 
           switch (answer)
           {
-              case 1:
+              case "1":
               showBooks();
               break;
-              case 2:
+              case "2":
               borrowBooks();
               break;
-              case 3:
+              case "3":
               returnBooks();
               break;
-              case 4:
+              case "4":
               myBorrowedBooks();
               break;
-              case 5:
+              case "5":
               startMenu();
               break;
               default:
               Console.WriteLine("ogiltigt val");
               navigationMenu();
+              break;
           }
 
 
@@ -126,18 +127,16 @@ namespace Bibloteket
               Console.WriteLine($"{i+1} | Titel: {bookTitle[i]} | Exemplar: {aviableBooks[i]}");
           }
           Console.WriteLine("Press enter when done");
-          Console.ReadLine( );
-          navigationMenu();
 
         }
         //This code is clearly broken please fix one day
         //This will let the user borrow the books that he chooses
         static void borrowBooks(){
           Console.WriteLine("Vilken bok vill du låna? Skriv nummret av boken du vill låna");
-          int answer = int.ConvertToInt32(Console.ReadLine());
-          if(aviableBooks[answer] != 0 &&){
-            aviableBooks[answer] -= 1;
-            isBookBorrowed[answer] == true;
+          int answer = Convert.ToInt32(Console.ReadLine());
+          if(aviableBooks[answer-1] != 0){
+            aviableBooks[answer-1] -= 1;
+            isBookBorrowed[answer-1] = true;
           }else{
             Console.WriteLine("You could not borrow that book, there might not be any left");
           }
@@ -159,18 +158,22 @@ namespace Bibloteket
         static string[] usernames = {"Bengt","Stig","Rutger","Sten", "Harald"};
         static int[] pinCode = {123456, 234567, 345678, 987654, 876554 };
         static bool loggedIn;
+        static bool softwareIsAlive = true;
 
         //Book variables
         static string[] bookTitle = {"Harry's potter", "Urtaskig park", "sjärn krig", "stump fiction", "Vargen av väggvägen"};
         static int[] aviableBooks = {1, 10, 0, 5, 2};
         static bool[] isBookBorrowed = {false, false, false, false, false};
+
         //Main Function
         static void Main(string[] args)
         {
-
             tryLogin();
-            navigationMenu();
-
+            while(softwareIsAlive == true){
+              navigationMenu();
+            }
+            
+            
         }
     }
 }
