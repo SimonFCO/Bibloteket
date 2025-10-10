@@ -49,19 +49,21 @@ namespace Bibloteket
                 Console.WriteLine("The Input was either too large or too small");
             }
 
-            
+            //This should take care of the login but check it later if it works
             if(loginAttemps < 2)
             {
                 loginAttemps += 1;
-                if (loginUsername == usernames[0] && loginPin == pinCode[0])
+
+                for (int i = 0; i < usernames.length; i++)
                 {
-                    loggedIn = true;
-                    Console.WriteLine($"Logged in as {loginUsername}");
+                    if(loginUsername == usernames[i] && loginPin == pinCode[i]){
+                      loggedIn = true;
+                      Console.WriteLine($"Logged in as {loginUsername}");
+                    }
                 }
-                else
-                {
-                    Console.WriteLine("Failed Login try again");
-                    tryLogin();
+
+                if(loggedIn == false){
+                  Console.WriteLine("Failed Login try again later");
                 }
             }
             
