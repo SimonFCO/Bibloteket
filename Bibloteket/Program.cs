@@ -25,7 +25,7 @@ namespace Bibloteket
                 tryLogin();
             }else if(answer == "B" || answer == "b")
             {
-
+                softwareIsAlive = false;
             }
             else
             {
@@ -37,10 +37,28 @@ namespace Bibloteket
         //This is the function for the login screen :D
         static void tryLogin()
         {
-            
+            string loginUsername = "";
             Console.WriteLine("--- Login ---");
             Console.WriteLine("Username: ");
-            string loginUsername = Console.ReadLine();
+            bool valid = false;
+            while(valid == false)
+            {
+                loginUsername = Console.ReadLine();
+                for (int i = 0; i < usernames.Length; i++)
+                {
+                    if (loginUsername == usernames[i])
+                    {
+                        valid = true;
+                    }
+                }
+
+                if (valid == false)
+                {
+                    Console.WriteLine("Not a valid username try again");
+                }
+            }
+
+
             int loginPin = 0;
             Console.WriteLine("Password: ");
             try
@@ -79,12 +97,6 @@ namespace Bibloteket
         //This is the navigationMenu Where after your login you can choose what to do!
         static void navigationMenu(){
 
-          //1, Visa böcker
-          //2, Låna Bok 
-          //3, Lämna tillbaka Bok
-          //4, Mina lån 
-          //5. Logga ut
-          
           Console.ReadLine();
           Console.Clear();
           Console.WriteLine("1, Visa Böcker");
@@ -129,7 +141,7 @@ namespace Bibloteket
           Console.WriteLine("Press enter when done");
 
         }
-        //This code is clearly broken please fix one day
+
         //This will let the user borrow the books that he chooses
         static void borrowBooks(){
           Console.WriteLine("Vilken bok vill du låna? Skriv nummret av boken du vill låna");
@@ -137,6 +149,7 @@ namespace Bibloteket
           if(aviableBooks[answer-1] != 0){
             aviableBooks[answer-1] -= 1;
             isBookBorrowed[answer-1] = true;
+            Console.WriteLine($"Du har lånat | Titel: {bookTitle[answer-1]}");
           }else{
             Console.WriteLine("You could not borrow that book, there might not be any left");
           }
@@ -144,11 +157,34 @@ namespace Bibloteket
         }
 
         static void returnBooks(){
-
+            for(int i = 0; i<isBookBorrowed.Length; i++)
+            {
+                if (isBookBorrowed[i] == true)
+                {
+                    Console.WriteLine($"{i + 1} | Titel: {bookTitle[i]}");
+                }
+            }
+            Console.WriteLine("Vilken bok vill du Lämna tillbaka? Skriv nummret av boken du vill låna");
+            int answer = Convert.ToInt32(Console.ReadLine());
+            if (isBookBorrowed[answer - 1] == true)
+            {
+                aviableBooks[answer - 1] += 1;
+                isBookBorrowed[answer - 1] = false;
+            }
+            else
+            {
+                Console.WriteLine("You could not borrow that book, there might not be any left");
+            }
         }
 
         static void myBorrowedBooks(){
-
+            for (int i = 0; i < isBookBorrowed.Length; i++)
+            {
+                if (isBookBorrowed[i] == true)
+                {
+                    Console.WriteLine($"{i + 1} | Titel: {bookTitle[i]}");
+                }
+            }
         }
 
 
@@ -168,8 +204,8 @@ namespace Bibloteket
         //Main Function
         static void Main(string[] args)
         {
-            tryLogin();
-            while(softwareIsAlive == true){
+            startMenu();
+            while (softwareIsAlive == true){
               navigationMenu();
             }
             
