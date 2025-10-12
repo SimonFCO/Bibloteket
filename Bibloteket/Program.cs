@@ -1,7 +1,5 @@
 ﻿//Simon Brink Sut25
-//
-//Problems
-//Currently i need to remake so that the borrowing system is based on person instead of just one array for all of them
+
 using System.Globalization;
 
 namespace Bibloteket
@@ -20,16 +18,18 @@ namespace Bibloteket
             Console.WriteLine("[A]: Login");
             Console.WriteLine("[B]: Exit");
             string answer = Console.ReadLine();
+            //If a continue to the login screen if b then just quit
             if(answer == "A" || answer == "a")
             {
                 tryLogin();
             }else if(answer == "B" || answer == "b")
             {
                 softwareIsAlive = false;
+                loggedIn = false;
             }
             else
             {
-                Console.WriteLine("Invalid, Try again");
+                Console.WriteLine("Försök igen");
                 Console.ReadLine();
                 startMenu();
             }
@@ -54,50 +54,80 @@ namespace Bibloteket
 
                 if (valid == false)
                 {
-                    Console.WriteLine("Not a valid username try again");
+                    Console.WriteLine("Inte ett registrerat användarnamn");
                 }
             }
 
-
+            int maxAttempts = 3;
             int loginPin = 0;
-            Console.WriteLine("Password: ");
-            try
-            {
-                loginPin = int.Parse(Console.ReadLine());
-            }
-            catch(FormatException)
-            {
-                Console.WriteLine("Input was not a valid integer.");
-            }
-            catch (OverflowException)
-            {
-                Console.WriteLine("The Input was either too large or too small");
-            }
+            loginAttemps = 0;
 
-            //This should take care of the login but check it later if it works
-            if(loginAttemps < 2)
+            while (softwareIsAlive && !loggedIn && loginAttemps < maxAttempts)
             {
-                loginAttemps += 1;
-
-                for (int i = 0; i < usernames.Length; i++)
+                loginAttemps++;
+                Console.Write("Pinkod: ");
+                try
                 {
-                    if(loginUsername == usernames[i] && loginPin == pinCode[i]){
-                      loggedIn = true;
-                      Console.WriteLine($"Logged in as {loginUsername}");
+                    loginPin = int.Parse(Console.ReadLine());
+                }
+                catch (FormatException)
+                {
+                Console.WriteLine("svaret var inte ett heltal.");
+                continue; // count as an attempt and loop again
+                }
+                catch (OverflowException)
+                {
+                Console.WriteLine("Nummret var antingen för stort eller för litet.");
+                continue;
+                }
+
+            // check if the username and pincode match
+            for (int i = 0; i < usernames.Length; i++)
+                {
+                    if (loginUsername == usernames[i] && loginPin == pinCode[i])
+                    {
+                        loggedIn = true;
+                        softwareIsAlive = true;
+                        Console.WriteLine($"Inloggad som {loginUsername}");
+                        navigationMenu();
+                        break;
+                    }
+                }
+                //if not the correct pincode then write how many tries left
+                if (!loggedIn && softwareIsAlive == true)
+                {
+                    if (loginAttemps >= maxAttempts)
+                    {
+                        Console.WriteLine("För många försök, stänger av.");
+                        // take action: disable software, exit loop, etc.
+                        softwareIsAlive = false;
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"misslyckad inlogning — {maxAttempts - loginAttemps} försök kvar.");
                     }
                 }
 
-                if(loggedIn == false){
-                  Console.WriteLine("Failed Login try again later");
-                }
             }
-            
+
+
+
+        }
+
+        static void pressEnterToReturn()
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.BackgroundColor = ConsoleColor.Blue;
+            Console.WriteLine("Tryck Enter för att återgå till huvudmenyn");
+            Console.ReadLine();
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.Black;
         }
         
         //This is the navigationMenu Where after your login you can choose what to do!
         static void navigationMenu(){
 
-          Console.ReadLine();
           Console.Clear();
           Console.WriteLine("1, Visa Böcker");
           Console.WriteLine("2, Låna bok");
@@ -122,6 +152,7 @@ namespace Bibloteket
               myBorrowedBooks();
               break;
               case "5":
+                    loggedIn = false;
               startMenu();
               break;
               default:
@@ -138,22 +169,31 @@ namespace Bibloteket
           {
               Console.WriteLine($"{i+1} | Titel: {bookTitle[i]} | Exemplar: {aviableBooks[i]}");
           }
-          Console.WriteLine("Press enter when done");
+            pressEnterToReturn();
 
         }
 
         //This will let the user borrow the books that he chooses
         static void borrowBooks(){
           Console.WriteLine("Vilken bok vill du låna? Skriv nummret av boken du vill låna");
-          int answer = Convert.ToInt32(Console.ReadLine());
-          if(aviableBooks[answer-1] != 0){
+            for (int i = 0; i < bookTitle.Length; i++)
+            {
+                Console.WriteLine($"{i + 1} | Titel: {bookTitle[i]} | Exemplar: {aviableBooks[i]}");
+            }
+            int answer = Convert.ToInt32(Console.ReadLine());
+
+
+            if (aviableBooks[answer - 1] != 0){
             aviableBooks[answer-1] -= 1;
-            isBookBorrowed[answer-1] = true;
-            Console.WriteLine($"Du har lånat | Titel: {bookTitle[answer-1]}");
+                ammountOfBorrowedBooks[answer - 1] += 1;
+                isBookBorrowed[answer - 1] = true;
+
+                Console.WriteLine($"Du har lånat | Titel: {bookTitle[answer-1]}");
           }else{
-            Console.WriteLine("You could not borrow that book, there might not be any left");
+            Console.WriteLine("Du kunde inte låna boken, det kanske inte finns några kvar");
           }
-          
+            pressEnterToReturn();
+
         }
 
         static void returnBooks(){
@@ -169,12 +209,18 @@ namespace Bibloteket
             if (isBookBorrowed[answer - 1] == true)
             {
                 aviableBooks[answer - 1] += 1;
-                isBookBorrowed[answer - 1] = false;
+                ammountOfBorrowedBooks[answer - 1] -= 1;
+                if (ammountOfBorrowedBooks[answer - 1] == 0)
+                {
+                    isBookBorrowed[answer - 1] = false;
+                }
+                
             }
             else
             {
-                Console.WriteLine("You could not borrow that book, there might not be any left");
+                Console.WriteLine("Du har inte lånat denna boken så du kan inte lämna tillbaka den.");
             }
+            pressEnterToReturn();
         }
 
         static void myBorrowedBooks(){
@@ -182,9 +228,10 @@ namespace Bibloteket
             {
                 if (isBookBorrowed[i] == true)
                 {
-                    Console.WriteLine($"{i + 1} | Titel: {bookTitle[i]}");
+                    Console.WriteLine($"{i + 1} | Titel: {bookTitle[i]} | antal: {ammountOfBorrowedBooks[i]}");
                 }
             }
+            pressEnterToReturn();
         }
 
 
@@ -200,12 +247,13 @@ namespace Bibloteket
         static string[] bookTitle = {"Harry's potter", "Urtaskig park", "sjärn krig", "stump fiction", "Vargen av väggvägen"};
         static int[] aviableBooks = {1, 10, 0, 5, 2};
         static bool[] isBookBorrowed = {false, false, false, false, false};
+        static int[] ammountOfBorrowedBooks = { 0, 0, 0, 0, 0 };
 
         //Main Function
         static void Main(string[] args)
         {
             startMenu();
-            while (softwareIsAlive == true){
+            while (softwareIsAlive == true && loggedIn == true){
               navigationMenu();
             }
             
