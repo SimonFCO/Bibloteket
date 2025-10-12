@@ -94,7 +94,7 @@ namespace Bibloteket
                     }
                 }
                 //if not the correct pincode then write how many tries left
-                if (!loggedIn && softwareIsAlive == true)
+                if (!loggedIn && softwareIsAlive)
                 {
                     if (loginAttemps >= maxAttempts)
                     {
@@ -180,10 +180,24 @@ namespace Bibloteket
             {
                 Console.WriteLine($"{i + 1} | Titel: {bookTitle[i]} | Exemplar: {aviableBooks[i]}");
             }
-            int answer = Convert.ToInt32(Console.ReadLine());
+            int answer = 0;
+            try
+            {
+                answer = int.Parse(Console.ReadLine());
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("svaret var inte ett heltal.");
+                
+            }
+            catch (OverflowException)
+            {
+                Console.WriteLine("Nummret var antingen för stort eller för litet.");
+                
+            }
 
 
-            if (aviableBooks[answer - 1] != 0){
+            if (answer >= 1 && answer <= aviableBooks.Length && aviableBooks[answer - 1] != 0 ){
             aviableBooks[answer-1] -= 1;
                 ammountOfBorrowedBooks[answer - 1] += 1;
                 isBookBorrowed[answer - 1] = true;
@@ -205,8 +219,22 @@ namespace Bibloteket
                 }
             }
             Console.WriteLine("Vilken bok vill du Lämna tillbaka? Skriv nummret av boken du vill låna");
-            int answer = Convert.ToInt32(Console.ReadLine());
-            if (isBookBorrowed[answer - 1] == true)
+            int answer = 0;
+            try
+            {
+                answer = int.Parse(Console.ReadLine());
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("svaret var inte ett heltal.");
+                
+            }
+            catch (OverflowException)
+            {
+                Console.WriteLine("Nummret var antingen för stort eller för litet.");
+                
+            }
+            if (answer >= 1 && answer <= isBookBorrowed.Length && isBookBorrowed[answer - 1] == true)
             {
                 aviableBooks[answer - 1] += 1;
                 ammountOfBorrowedBooks[answer - 1] -= 1;
@@ -226,7 +254,7 @@ namespace Bibloteket
         static void myBorrowedBooks(){
             for (int i = 0; i < isBookBorrowed.Length; i++)
             {
-                if (isBookBorrowed[i] == true)
+                if (isBookBorrowed[i])
                 {
                     Console.WriteLine($"{i + 1} | Titel: {bookTitle[i]} | antal: {ammountOfBorrowedBooks[i]}");
                 }
