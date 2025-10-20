@@ -4,9 +4,6 @@ using System.Globalization;
 
 namespace Bibloteket
 {
-    class books{
-
-    }
     internal class Program
     {
 
@@ -61,7 +58,7 @@ namespace Bibloteket
             int maxAttempts = 3;
             int loginPin = 0;
             loginAttemps = 0;
-
+            //This will limit the ammount of login atemps to 3
             while (softwareIsAlive && !loggedIn && loginAttemps < maxAttempts)
             {
                 loginAttemps++;
@@ -115,6 +112,7 @@ namespace Bibloteket
 
         }
 
+        //This will just output a little colored text saying press enter to return to main menu
         static void pressEnterToReturn()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -137,6 +135,7 @@ namespace Bibloteket
 
           string answer = Console.ReadLine();
 
+          //This will depending on the answer start the corresponding function
           switch (answer)
           {
               case "1":
@@ -196,7 +195,7 @@ namespace Bibloteket
                 
             }
 
-
+            //This is the mechanism for borrowing. It will remove one from how many books are aviable to borrow and make the book borrowed
             if (answer >= 1 && answer <= aviableBooks.Length && aviableBooks[answer - 1] != 0 ){
             aviableBooks[answer-1] -= 1;
                 ammountOfBorrowedBooks[answer - 1] += 1;
@@ -210,6 +209,7 @@ namespace Bibloteket
 
         }
 
+        //This will open the menu for returning books, it will show what books are currently borrowed and some information about them
         static void returnBooks(){
             for(int i = 0; i<isBookBorrowed.Length; i++)
             {
@@ -251,6 +251,7 @@ namespace Bibloteket
             pressEnterToReturn();
         }
 
+        //This will give out a list of all books that are borrowed
         static void myBorrowedBooks(){
             for (int i = 0; i < isBookBorrowed.Length; i++)
             {
