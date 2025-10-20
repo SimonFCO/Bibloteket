@@ -40,10 +40,10 @@ namespace Bibloteket
             bool valid = false;
             while(valid == false)
             {
-                loginUsername = Console.ReadLine();
+                loginUsername = Console.ReadLine().ToLower();
                 for (int i = 0; i < usernames.Length; i++)
                 {
-                    if (loginUsername == usernames[i])
+                    if (loginUsername == usernames[i].ToLower())
                     {
                         valid = true;
                     }
@@ -81,7 +81,7 @@ namespace Bibloteket
             // check if the username and pincode match
             for (int i = 0; i < usernames.Length; i++)
                 {
-                    if (loginUsername == usernames[i] && loginPin == pinCode[i])
+                    if (loginUsername == usernames[i].ToLower() && loginPin == pinCode[i])
                     {
                         loggedIn = true;
                         softwareIsAlive = true;
