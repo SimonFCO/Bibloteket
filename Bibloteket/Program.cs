@@ -38,7 +38,7 @@ namespace Bibloteket
             Console.WriteLine("--- Login ---");
             Console.WriteLine("Username: ");
             bool valid = false;
-            while(valid == false)
+            while(!valid)
             {
                 loginUsername = Console.ReadLine().ToLower();
                 for (int i = 0; i < usernames.Length; i++)
@@ -49,7 +49,7 @@ namespace Bibloteket
                     }
                 }
 
-                if (valid == false)
+                if (!valid)
                 {
                     Console.WriteLine("Inte ett registrerat användarnamn");
                 }
@@ -213,7 +213,7 @@ namespace Bibloteket
         static void returnBooks(){
             for(int i = 0; i<isBookBorrowed.Length; i++)
             {
-                if (isBookBorrowed[i] == true)
+                if (isBookBorrowed[i])
                 {
                     Console.WriteLine($"{i + 1} | Titel: {bookTitle[i]}");
                 }
@@ -234,7 +234,7 @@ namespace Bibloteket
                 Console.WriteLine("Nummret var antingen för stort eller för litet.");
                 
             }
-            if (answer >= 1 && answer <= isBookBorrowed.Length && isBookBorrowed[answer - 1] == true)
+            if (answer >= 1 && answer <= isBookBorrowed.Length && isBookBorrowed[answer - 1])
             {
                 aviableBooks[answer - 1] += 1;
                 ammountOfBorrowedBooks[answer - 1] -= 1;
@@ -282,7 +282,7 @@ namespace Bibloteket
         static void Main(string[] args)
         {
             startMenu();
-            while (softwareIsAlive == true && loggedIn == true){
+            while (softwareIsAlive && loggedIn){
               navigationMenu();
             }
             
